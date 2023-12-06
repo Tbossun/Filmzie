@@ -1,5 +1,7 @@
 ﻿using Filmzie.ApiService;
 using Filmzie.ApiService.Interface;
+using Filmzie.Context;
+using Filmzie.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,10 +12,12 @@ namespace Filmzie.Controllers
     public class MediaController : ControllerBase
     {
         private readonly IOMDBService _omdbService;
+        private readonly AppDbContext _dbContext;
 
-        public MediaController(IOMDBService service)
+        public MediaController(IOMDBService service, AppDbContext dbContext)
         {
             _omdbService = service;
+            _dbContext = dbContext;
         }
 
 
@@ -47,6 +51,7 @@ namespace Filmzie.Controllers
         {
             try
             {
+                SaveQueryToDatabase(Title);
                 HttpResponseMessage response = await _omdbService.MediaByTitleAsync(Title, year);
 
                 if (response.IsSuccessStatusCode)
@@ -74,6 +79,7 @@ namespace Filmzie.Controllers
         {
             try
             {
+                SaveQueryToDatabase(query);
                 HttpResponseMessage response = await _omdbService.MediaSearchAsync(query, page);
 
                 if (response.IsSuccessStatusCode)
@@ -90,6 +96,38 @@ namespace Filmzie.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
             }
+        }
+
+
+        [HttpGet("latest-queries")]
+        public IActionResult GetLatestQueries()
+        {
+            try
+            {
+                var latestQueries = _dbContext.SearchQueries
+                    .OrderByDescending(q => q.CreatedAt)
+                    .Take(5)
+                    .ToList();
+
+                return Ok(latestQueries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
+            }
+        }
+
+
+        private void SaveQueryToDatabase(string query)
+        {
+            var searchQuery = new SearchQuery
+            {
+                Query = query,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _dbContext.SearchQueries.Add(searchQuery);
+            _dbContext.SaveChanges();
         }
     }
 }
