@@ -1,4 +1,4 @@
-
+import MediaSearch from "../pages/MediaSearch";
 export const routesGen = {
   home: "/",
   mediaList: (type) => `/${type}`,
@@ -11,6 +11,11 @@ export const routesGen = {
 };
 
 const routes = [
-]
+  {
+    index: true,
+    element: <MediaSearch />,
+    state: "home",
+  },
+];
 
 export default routes;
