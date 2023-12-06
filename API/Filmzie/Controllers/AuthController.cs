@@ -37,7 +37,7 @@ namespace Filmzie.Controllers
         /// <summary>
         /// Registers a new user. 
         /// </summary>
-        /// <param name="input">A DTO containing the user data.</param>
+        /// <param name="regRequest">A DTO containing the user data.</param>
         /// <returns>A 201 - Created Status Code in case of success.</returns>
         /// <response code="201">User has been registered</response>                  
         /// <response code="403">User Already Exist</response>                
@@ -82,7 +82,7 @@ namespace Filmzie.Controllers
         /// <summary>
         /// Performs a user email login. 
         /// </summary>
-        /// <param name="input">A DTO containing the user's credentials.</param>
+        /// <param name="loginRequest">A DTO containing the user's credentials.</param>
         /// <returns>The Bearer Token (in JWT format).</returns>
         /// <response code="200">User has been logged in</response> 
         /// <response code="401">Login failed (unauthorized)</response>
@@ -146,7 +146,7 @@ namespace Filmzie.Controllers
         /// <summary>
         ///  Change to a new password
         /// </summary>
-        /// <param name="resetpassword"></param>
+        /// <param name="model"></param>
         /// <response code="200">Password changed successfully!</response> 
         /// <response code="400">Reset password failed</response> 
         [HttpPut("update-password")]

@@ -20,7 +20,11 @@ namespace Filmzie.Controllers
             _dbContext = dbContext;
         }
 
-
+        /// <summary>
+        /// Get details of a media by its ID.
+        /// </summary>
+        /// <param name="mediaId">The ID of the media.</param>
+        /// <returns>Returns media details.</returns>
         [HttpGet("detail/{mediaId}")]
         public async Task<IActionResult> GetMediaDetails(string mediaId)
         {
@@ -45,7 +49,12 @@ namespace Filmzie.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Search media by title and optional year.
+        /// </summary>
+        /// <param name="Title">The title of the media.</param>
+        /// <param name="year">Optional parameter for the release year.</param>
+        /// <returns>Returns search results for the specified title and year.</returns>
         [HttpGet("search/{Title}")]
         public async Task<IActionResult> SearchMediaByYear(string Title, string? year)
         {
@@ -73,7 +82,12 @@ namespace Filmzie.Controllers
 
 
 
-
+        /// <summary>
+        /// Search media by query and page number.
+        /// </summary>
+        /// <param name="query">The search query.</param>
+        /// <param name="page">The page number for paginated results.</param>
+        /// <returns>Returns search results for the specified query and page.</returns>
         [HttpGet("/search/{query}/{page}")]
         public async Task<IActionResult> SearchMedia(string query, int page)
         {
@@ -98,7 +112,10 @@ namespace Filmzie.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Get the latest 5 search queries from the database.
+        /// </summary>
+        /// <returns>Returns the latest 5 search queries.</returns>
         [HttpGet("latest-queries")]
         public IActionResult GetLatestQueries()
         {

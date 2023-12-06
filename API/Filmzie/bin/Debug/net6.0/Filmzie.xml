@@ -8,7 +8,7 @@
             <summary>
             Registers a new user. 
             </summary>
-            <param name="input">A DTO containing the user data.</param>
+            <param name="regRequest">A DTO containing the user data.</param>
             <returns>A 201 - Created Status Code in case of success.</returns>
             <response code="201">User has been registered</response>                  
             <response code="403">User Already Exist</response>                
@@ -18,7 +18,7 @@
             <summary>
             Performs a user email login. 
             </summary>
-            <param name="input">A DTO containing the user's credentials.</param>
+            <param name="loginRequest">A DTO containing the user's credentials.</param>
             <returns>The Bearer Token (in JWT format).</returns>
             <response code="200">User has been logged in</response> 
             <response code="401">Login failed (unauthorized)</response>
@@ -28,7 +28,7 @@
             <summary>
              Change to a new password
             </summary>
-            <param name="resetpassword"></param>
+            <param name="model"></param>
             <response code="200">Password changed successfully!</response> 
             <response code="400">Reset password failed</response> 
         </member>
@@ -39,6 +39,35 @@
             <response code="200">User Information successfully retrieved!</response> 
             <response code="404">User Not found</response> 
             <response code="500">Unable to retrieve user information</response> 
+        </member>
+        <member name="M:Filmzie.Controllers.MediaController.GetMediaDetails(System.String)">
+            <summary>
+            Get details of a media by its ID.
+            </summary>
+            <param name="mediaId">The ID of the media.</param>
+            <returns>Returns media details.</returns>
+        </member>
+        <member name="M:Filmzie.Controllers.MediaController.SearchMediaByYear(System.String,System.String)">
+            <summary>
+            Search media by title and optional year.
+            </summary>
+            <param name="Title">The title of the media.</param>
+            <param name="year">Optional parameter for the release year.</param>
+            <returns>Returns search results for the specified title and year.</returns>
+        </member>
+        <member name="M:Filmzie.Controllers.MediaController.SearchMedia(System.String,System.Int32)">
+            <summary>
+            Search media by query and page number.
+            </summary>
+            <param name="query">The search query.</param>
+            <param name="page">The page number for paginated results.</param>
+            <returns>Returns search results for the specified query and page.</returns>
+        </member>
+        <member name="M:Filmzie.Controllers.MediaController.GetLatestQueries">
+            <summary>
+            Get the latest 5 search queries from the database.
+            </summary>
+            <returns>Returns the latest 5 search queries.</returns>
         </member>
     </members>
 </doc>
