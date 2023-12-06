@@ -21,7 +21,6 @@
             <param name="input">A DTO containing the user's credentials.</param>
             <returns>The Bearer Token (in JWT format).</returns>
             <response code="200">User has been logged in</response> 
-            <response code="202">OTP sent to user's Email</response>   
             <response code="401">Login failed (unauthorized)</response>
             <response code="500">User does not exist (unauthorized)</response>
         </member>

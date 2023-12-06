@@ -1,4 +1,5 @@
-﻿using Filmies_Data.Models;
+﻿using AutoMapper;
+using Filmies_Data.Models;
 using Filmzie.Context;
 using Filmzie.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -19,14 +20,16 @@ namespace Filmzie.Controllers
         private IConfiguration _configuration;
         private readonly SignInManager<User> _signInManager;
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
         public AuthController(UserManager<User> userManager, IConfiguration configuration, 
-            SignInManager<User> signInManager, AppDbContext context)
+            SignInManager<User> signInManager, AppDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _configuration = configuration;
             _signInManager = signInManager;
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -82,7 +85,6 @@ namespace Filmzie.Controllers
         /// <param name="input">A DTO containing the user's credentials.</param>
         /// <returns>The Bearer Token (in JWT format).</returns>
         /// <response code="200">User has been logged in</response> 
-        /// <response code="202">OTP sent to user's Email</response>   
         /// <response code="401">Login failed (unauthorized)</response>
         /// <response code="500">User does not exist (unauthorized)</response>
         [HttpPost("signin")]
@@ -218,7 +220,9 @@ namespace Filmzie.Controllers
                         new APIResponse { StatusCode = "Error", IsSuccess = false, Message = "User not found!" });
                 }
 
-                return Ok(user);
+                var userDto = _mapper.Map<UserDTO>(user);
+
+                return Ok(userDto);
             }
             catch (Exception)
             {

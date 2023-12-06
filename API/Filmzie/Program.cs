@@ -86,11 +86,11 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IOMDBService, OMDBService>();
 
-builder.Services.Configure<OMDBSettings>(builder.Configuration.GetSection("TMDBSettings"));
+builder.Services.Configure<OMDBSettings>(builder.Configuration.GetSection("OMDBSettings"));
 
 builder.Services.AddHttpClient<IOMDBService, OMDBService>(client =>
 {
-    client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+    client.BaseAddress = new Uri("https://www.omdbapi.com/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
