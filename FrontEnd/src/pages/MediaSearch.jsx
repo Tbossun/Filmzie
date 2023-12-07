@@ -1,5 +1,3 @@
-/** @format */
-
 import { LoadingButton } from "@mui/lab";
 import { Box, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
@@ -10,7 +8,7 @@ import uiConfigs from "../configs/ui.configs";
 import MenuItem from "@mui/material/MenuItem";
 
 let timer;
-const timeout = 500;
+const timeout = 1000;
 
 const MediaSearch = () => {
   const [query, setQuery] = useState("");
@@ -45,12 +43,11 @@ const MediaSearch = () => {
       if (response.err) {
         toast.error(response.err.message);
       } else if (response.response) {
-        // Check the search mode and set the medias state accordingly
         if (searchMode === "search") {
           if (page > 1) setMedias((m) => [...m, ...response.response.Search]);
           else setMedias([...response.response.Search]);
         } else {
-          setMedias([response.response]); // Wrap in an array for consistency
+          setMedias([response.response]); 
         }
       }
     } catch (error) {

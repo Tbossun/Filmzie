@@ -39,7 +39,7 @@ const MediaItem = ({ media, mediaType }) => {
         {/* movie or tv item */}
         {mediaType !== "people" && (
           <>
-            {favoriteUtils.check({ listFavorites, mediaId: media.id }) && (
+            {favoriteUtils.check({ listFavorites, mediaId: media.imdbID || "" }) && (
               <FavoriteIcon
                 color="primary"
                 sx={{

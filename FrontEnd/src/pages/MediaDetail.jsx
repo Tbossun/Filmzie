@@ -76,7 +76,7 @@ const MediaDetail = () => {
     };
 
     const { response, err } = await favoriteApi.add(body);
-    //console.log(body);
+    console.log(media.imdbID);
 
     setOnRequest(false);
 
@@ -92,9 +92,13 @@ const MediaDetail = () => {
     if (onRequest) return;
     setOnRequest(true);
 
-    const favorite = listFavorites.find(e => e.mediaId.toString() === media.id.toString());
+    const favorite = listFavorites.find(
+      (e) => e.mediaId.toString() === media.imdbID
+    );
 
-    const { response, err } = await favoriteApi.remove({ favoriteId: favorite.id });
+    const { response, err } = await favoriteApi.remove({
+      favoriteId: media.imdbID,
+    });
 
     setOnRequest(false);
 
