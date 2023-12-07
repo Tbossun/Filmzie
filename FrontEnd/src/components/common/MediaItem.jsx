@@ -19,12 +19,13 @@ const MediaItem = ({ media, mediaType }) => {
   useEffect(() => {
     setTitle(media.Title || media.name || media.mediaTitle);
 
-    setPosterPath(media.Poster);
+    setPosterPath(media.Poster || media.mediaPoster);
 
       setReleaseDate(media.Year);
    
 
   }, [media, mediaType]);
+
 
   return (
     <Link to={routesGen.mediaDetail(media.imdbID || media.id)}>
@@ -39,7 +40,10 @@ const MediaItem = ({ media, mediaType }) => {
         {/* movie or tv item */}
         {mediaType !== "people" && (
           <>
-            {favoriteUtils.check({ listFavorites, mediaId: media.imdbID || "" }) && (
+            {favoriteUtils.check({
+              listFavorites,
+              mediaId: media.imdbID || "",
+            }) && (
               <FavoriteIcon
                 color="primary"
                 sx={{

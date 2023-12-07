@@ -34,7 +34,6 @@ const favoriteApi = {
         },
         { cancelToken: source.token }
       );
-        console.log(response);
       return { response };
     } catch (err) { return { err }; }
   },
