@@ -6,7 +6,7 @@
     <members>
         <member name="M:Filmzie.Controllers.AuthController.Register(Filmzie.Models.Dto.SignUpDto)">
             <summary>
-            Registers a new user. 
+            Register as a new user. 
             </summary>
             <param name="regRequest">A DTO containing the user data.</param>
             <returns>A 201 - Created Status Code in case of success.</returns>
@@ -16,7 +16,7 @@
         </member>
         <member name="M:Filmzie.Controllers.AuthController.Login(Filmzie.Models.Dto.LoginRequestDTO)">
             <summary>
-            Performs a user email login. 
+            Perform a user email login. 
             </summary>
             <param name="loginRequest">A DTO containing the user's credentials.</param>
             <returns>The Bearer Token (in JWT format).</returns>
@@ -24,9 +24,17 @@
             <response code="401">Login failed (unauthorized)</response>
             <response code="500">User does not exist (unauthorized)</response>
         </member>
+        <member name="M:Filmzie.Controllers.AuthController.GetToken(System.String,System.Collections.Generic.List{System.Security.Claims.Claim})">
+            <summary>
+            Generate JWT Token
+            </summary>
+            <param name="userId"></param>
+            <param name="authClaims"></param>
+            <returns>JWT TOKEN</returns>
+        </member>
         <member name="M:Filmzie.Controllers.AuthController.UpdatePassword(Filmzie.Models.Dto.PasswordUpdateModel)">
             <summary>
-             Change to a new password
+             Change/Update password
             </summary>
             <param name="model"></param>
             <response code="200">Password changed successfully!</response> 
@@ -39,6 +47,33 @@
             <response code="200">User Information successfully retrieved!</response> 
             <response code="404">User Not found</response> 
             <response code="500">Unable to retrieve user information</response> 
+        </member>
+        <member name="M:Filmzie.Controllers.AuthController.GetFavorites">
+            <summary>
+            Get User Favorites
+            </summary>
+            <response code="200">User Favorites successfully retrieved!</response>  
+            <response code="500">Unable to retrieve user Favorites</response>
+        </member>
+        <member name="M:Filmzie.Controllers.AuthController.RemoveFavorite(System.String)">
+            <summary>
+             Remove a media from User Favorite list
+            </summary>
+            <param name="favoriteId"></param>
+            <response code="200">Media successfully removed from Favorites!</response> 
+            <response code="404">Media Not found</response> 
+            <response code="500">Unable to retrieve Favorites information</response>
+        </member>
+        <member name="M:Filmzie.Controllers.AuthController.AddFavorite(Filmzie.Models.Dto.FavoriteCreateModel)">
+            <summary>
+             Add a media to Favorites List
+            </summary>
+            <param name="model"></param>
+            <response code="201">Media successfully Added to Favorites!</response> 
+            <response code="404">User Not found</response> 
+            <response code="400">Bad Request!</response>
+            <response code="409">Item is already a fovorite</response> 
+            <response code="500">Internal server error</response>
         </member>
         <member name="M:Filmzie.Controllers.MediaController.GetMediaDetails(System.String)">
             <summary>

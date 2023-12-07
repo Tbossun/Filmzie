@@ -5,6 +5,7 @@ using Filmzie.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -35,7 +36,7 @@ namespace Filmzie.Controllers
 
 
         /// <summary>
-        /// Registers a new user. 
+        /// Register as a new user. 
         /// </summary>
         /// <param name="regRequest">A DTO containing the user data.</param>
         /// <returns>A 201 - Created Status Code in case of success.</returns>
@@ -80,7 +81,7 @@ namespace Filmzie.Controllers
 
 
         /// <summary>
-        /// Performs a user email login. 
+        /// Perform a user email login. 
         /// </summary>
         /// <param name="loginRequest">A DTO containing the user's credentials.</param>
         /// <returns>The Bearer Token (in JWT format).</returns>
@@ -122,7 +123,12 @@ namespace Filmzie.Controllers
         }
 
 
-
+         /// <summary>
+         /// Generate JWT Token
+         /// </summary>
+         /// <param name="userId"></param>
+         /// <param name="authClaims"></param>
+         /// <returns>JWT TOKEN</returns>
         private JwtSecurityToken GetToken(string userId, List<Claim> authClaims)
         {
             var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -144,7 +150,7 @@ namespace Filmzie.Controllers
 
 
         /// <summary>
-        ///  Change to a new password
+        ///  Change/Update password
         /// </summary>
         /// <param name="model"></param>
         /// <response code="200">Password changed successfully!</response> 
@@ -228,6 +234,128 @@ namespace Filmzie.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new APIResponse { StatusCode = "Error", IsSuccess = false, Message = "An error occurred while retrieving user information." });
+            }
+        }
+
+
+        /// <summary>
+        /// Get User Favorites
+        /// </summary>
+        /// <response code="200">User Favorites successfully retrieved!</response>  
+        /// <response code="500">Unable to retrieve user Favorites</response>
+        [HttpGet("favorites")]
+        [Authorize]
+        public async Task<IActionResult> GetFavorites()
+        {
+            try
+            {
+                // Retrieve favorites for the authenticated user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var favorites = await _context.Favorites
+                    .Where(f => f.UserId == userId)
+                    .OrderByDescending(f => f.CreatedAt)
+                    .ToListAsync();
+
+                return Ok(favorites);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        ///  Remove a media from User Favorite list
+        /// </summary>
+        /// <param name="favoriteId"></param>
+        /// <response code="200">Media successfully removed from Favorites!</response> 
+        /// <response code="404">Media Not found</response> 
+        /// <response code="500">Unable to retrieve Favorites information</response>
+        [HttpDelete("favorites/{favoriteId}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFavorite(string favoriteId)
+        {
+            try
+            {
+                if (favoriteId == null)
+                {
+                    return BadRequest(new { message = "Invalid favoriteId. It must be a positive integer." });
+                }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var favorite = await _context.Favorites
+                    .FirstOrDefaultAsync(f => f.MediaId == favoriteId && f.UserId == userId);
+
+                if (favorite == null)
+                {
+                    return NotFound(new { message = "Favorite not found or doesn't belong to the authenticated user." });
+                }
+                _context.Favorites.Remove(favorite);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Favorite removed successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        ///  Add a media to Favorites List
+        /// </summary>
+        /// <param name="model"></param>
+        /// <response code="201">Media successfully Added to Favorites!</response> 
+        /// <response code="404">User Not found</response> 
+        /// <response code="400">Bad Request!</response>
+        /// <response code="409">Item is already a fovorite</response> 
+        /// <response code="500">Internal server error</response>
+        [HttpPost("addfavorites")]
+        [Authorize]
+        public async Task<IActionResult> AddFavorite([FromBody] FavoriteCreateModel model)
+        {
+            try
+            {
+                // Validate model and perform necessary checks
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Add logic to check if the item is already a favorite
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var existingfav = await _context.Favorites.FirstOrDefaultAsync(f => f.UserId == userId
+                && f.MediaId == model.mediaId);
+
+                if (existingfav != null)
+                {
+                    // Item is already a favorite, return a conflict response
+                    return Conflict(new { message = "Item is already a favorite for the user." });
+                }
+
+                // Create and save the favorite
+                var favorite = new Favorites
+                {
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    MediaId = model.mediaId,
+                    MediaTitle = model.mediaTitle,
+                    MediaType = model.mediaType,
+                    MediaPoster = model.mediaPoster,
+                    MediaRate = model.mediaRate
+                };
+
+                _context.Favorites.Add(favorite);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetFavorites), new { userId = favorite.UserId }, favorite);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
             }
         }
     }

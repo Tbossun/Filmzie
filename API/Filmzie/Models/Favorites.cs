@@ -17,7 +17,7 @@ namespace Filmies_Data.Models
         public string MediaType { get; set; }
 
         [Required]
-        public double MediaId { get; set; }
+        public string MediaId { get; set; }
 
         [Required]
         public string MediaTitle { get; set; }

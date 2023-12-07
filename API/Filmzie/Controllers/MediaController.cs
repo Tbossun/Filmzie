@@ -25,7 +25,7 @@ namespace Filmzie.Controllers
         /// </summary>
         /// <param name="mediaId">The ID of the media.</param>
         /// <returns>Returns media details.</returns>
-        [HttpGet("detail/{mediaId}")]
+        [HttpGet("Id/{mediaId}")]
         public async Task<IActionResult> GetMediaDetails(string mediaId)
         {
             try
@@ -55,7 +55,7 @@ namespace Filmzie.Controllers
         /// <param name="Title">The title of the media.</param>
         /// <param name="year">Optional parameter for the release year.</param>
         /// <returns>Returns search results for the specified title and year.</returns>
-        [HttpGet("search/{Title}")]
+        [HttpGet("Title/{Title}")]
         public async Task<IActionResult> SearchMediaByYear(string Title, string? year)
         {
             try
@@ -88,7 +88,7 @@ namespace Filmzie.Controllers
         /// <param name="query">The search query.</param>
         /// <param name="page">The page number for paginated results.</param>
         /// <returns>Returns search results for the specified query and page.</returns>
-        [HttpGet("/search/{query}/{page}")]
+        [HttpGet("search/{query}/{page}")]
         public async Task<IActionResult> SearchMedia(string query, int page)
         {
             try
