@@ -1,32 +1,25 @@
-import privateClient from "../client/private.client";
 import publicClient from "../client/public.client";
 
 const mediaEndpoints = {
-  list: ({ mediaType, mediaCategory, page }) =>
-    `${mediaType}/${mediaCategory}?page=${page}`,
-  Id: ({ mediaId }) => `$/detail/${mediaId}`,
-  Title: ({ Title }) => `$/detail/${Title}`,
+  Id: ({ mediaId }) => `/Id/${mediaId}`,
+  Title: ({ Title }) => `/Title/${Title}`,
   search: ({ query, page }) => `/search/${query}/${page}`,
-  queries: "latest-queries"
+  queries: () => `/latest-queries`,
 };
 
 const mediaApi = {
-  getList: async ({ mediaType, mediaCategory, page }) => {
+  getByTitle: async ({ Title }) => {
     try {
-      const response = await publicClient.get(
-        mediaEndpoints.list({ mediaType, mediaCategory, page })
-      );
+      const response = await publicClient.get(mediaEndpoints.Title({ Title }));
 
       return { response };
     } catch (err) {
       return { err };
     }
   },
-  getDetail: async ({ mediaId }) => {
+  getById: async ({ mediaId }) => {
     try {
-      const response = await privateClient.get(
-        mediaEndpoints.detail({ mediaId })
-      );
+      const response = await publicClient.get(mediaEndpoints.Id({ mediaId }));
 
       return { response };
     } catch (err) {
@@ -46,15 +39,12 @@ const mediaApi = {
   },
   queries: async () => {
     try {
-      const response = await publicClient.get(
-        mediaEndpoints.queries()
-      );
-      return {response}
+      const response = await publicClient.get(mediaEndpoints.queries());
+      return { response };
+    } catch (err) {
+      return { err };
     }
-    catch (err) {
-      return {err}
-    }
-  }
+  },
 };
 
 export default mediaApi;

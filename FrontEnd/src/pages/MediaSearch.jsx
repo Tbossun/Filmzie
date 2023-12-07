@@ -1,12 +1,13 @@
 /** @format */
 
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Stack, TextField, Toolbar } from "@mui/material";
+import { Box, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import mediaApi from "../api/modules/media.api";
 import MediaGrid from "../components/common/MediaGrid";
 import uiConfigs from "../configs/ui.configs";
+import MenuItem from "@mui/material/MenuItem";
 
 let timer;
 const timeout = 500;
@@ -16,35 +17,77 @@ const MediaSearch = () => {
   const [onSearch, setOnSearch] = useState(false);
   const [medias, setMedias] = useState([]);
   const [page, setPage] = useState(1);
+  const [searchMode, setSearchMode] = useState("search");
+  const [lastSearches, setLastSearches] = useState([]);
 
   const search = useCallback(async () => {
     setOnSearch(true);
 
-    const { response, err } = await mediaApi.search({
-      query,
-      page,
-    });
+    try {
+      let response;
 
-    setOnSearch(false);
+      switch (searchMode) {
+        case "search":
+          response = await mediaApi.search({ query, page });
+          break;
+        case "getById":
+          response = await mediaApi.getById({ mediaId: query });
+          break;
+        case "getByTitle":
+          response = await mediaApi.getByTitle({ Title: query });
+          break;
+        default:
+          throw new Error("Invalid search mode");
+      }
 
-    if (err) toast.error(err.message);
-    if (response) {
-      if (page > 1) setMedias((m) => [...m, ...response.Search]);
-      else setMedias([...response.Search]);
+      setOnSearch(false);
+
+      if (response.err) {
+        toast.error(response.err.message);
+      } else if (response.response) {
+        // Check the search mode and set the medias state accordingly
+        if (searchMode === "search") {
+          if (page > 1) setMedias((m) => [...m, ...response.response.Search]);
+          else setMedias([...response.response.Search]);
+        } else {
+          setMedias([response.response]); // Wrap in an array for consistency
+        }
+      }
+    } catch (error) {
+      toast.error(`Error: ${error.message}`);
     }
-  }, [query, page]);
+  }, [query, page, searchMode]);
+
+
+  const fetchLastSearches = useCallback(async () => {
+    try {
+      const { response } = await mediaApi.queries();
+      if (response) {
+        const queries = response.map((item) => item.query);
+        setLastSearches(queries);
+      }
+    } catch (error) {
+      console.error("Error fetching last searches:", error.message);
+    }
+  }, []);
+
+
 
   useEffect(() => {
     if (query.trim().length === 0) {
       setMedias([]);
       setPage(1);
-    } else search();
-  }, [search, query, page]);
+    } else {
+      search();
+      fetchLastSearches();
+    }
+  }, [search, query, page, fetchLastSearches]);
 
   useEffect(() => {
     setMedias([]);
     setPage(1);
-  }, []);
+    fetchLastSearches();
+  }, [fetchLastSearches]);
 
   const onQueryChange = (e) => {
     const newQuery = e.target.value;
@@ -55,25 +98,41 @@ const MediaSearch = () => {
     }, timeout);
   };
 
+  const handleSearchModeChange = (event) => {
+    setSearchMode(event.target.value);
+  };
+
   return (
     <>
       <Toolbar />
       <Box sx={{ ...uiConfigs.style.mainContent }}>
         <Stack spacing={2}>
-          <Stack
-            spacing={2}
-            direction="row"
-            justifyContent="center"
-            sx={{ width: "100%" }}>
-            {/* Removed the buttons from here */}
-          </Stack>
           <TextField
             color="success"
-            placeholder="Search Filmzies"
+            placeholder={`Search ${
+              searchMode === "getById" ? "ID" : "Filmzie"
+            }`}
             sx={{ width: "100%" }}
             autoFocus
             onChange={onQueryChange}
           />
+          <TextField
+            select
+            label="Search Mode"
+            value={searchMode}
+            onChange={handleSearchModeChange}
+            sx={{ width: "40%" }}>
+            <MenuItem value="search">General Search</MenuItem>
+            <MenuItem value="getById">Search by ID</MenuItem>
+            <MenuItem value="getByTitle">Search by Title</MenuItem>
+          </TextField>
+
+          {/* Display last searches */}
+          {lastSearches.length > 0 && (
+            <Typography variant="subtitle1" gutterBottom>
+              Last Searches: {lastSearches.join(", ")}
+            </Typography>
+          )}
 
           {/* Move the MediaGrid component here */}
           <MediaGrid medias={medias} />
@@ -84,24 +143,6 @@ const MediaSearch = () => {
             </LoadingButton>
           )}
         </Stack>
-
-        {/* Display the movie titles under each image */}
-        {/* <Stack
-          spacing={2}
-          direction="row"
-          justifyContent="center"
-          sx={{ width: "100%" }}>
-          {medias.map((item, index) => (
-            <Box key={index}>
-              <img
-                src={item.Poster}
-                alt={item.Title}
-                style={{ width: "150px", height: "200px", marginBottom: "8px" }}
-              />
-              <div>{item.Title}</div>
-            </Box>
-          ))}
-        </Stack> */}
       </Box>
     </>
   );

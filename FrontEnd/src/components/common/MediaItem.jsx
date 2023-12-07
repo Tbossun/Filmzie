@@ -27,14 +27,15 @@ const MediaItem = ({ media, mediaType }) => {
   }, [media, mediaType]);
 
   return (
-    <Link to={mediaType !== "people" ? routesGen.mediaDetail(mediaType, media.mediaId || media.id) : routesGen.person(media.id)}>
-      <Box sx={{
-        ...uiConfigs.style.backgroundImage(posterPath),
-        paddingTop: "160%",
-        "&:hover .media-info": { opacity: 1, bottom: 0 },
-        "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
-        color: "primary.contrastText"
-      }}>
+    <Link to={routesGen.mediaDetail(media.imdbID || media.id)}>
+      <Box
+        sx={{
+          ...uiConfigs.style.backgroundImage(posterPath),
+          paddingTop: "160%",
+          "&:hover .media-info": { opacity: 1, bottom: 0 },
+          "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
+          color: "primary.contrastText",
+        }}>
         {/* movie or tv item */}
         {mediaType !== "people" && (
           <>
@@ -45,20 +46,24 @@ const MediaItem = ({ media, mediaType }) => {
                   position: "absolute",
                   top: 2,
                   right: 2,
-                  fontSize: "2rem"
+                  fontSize: "2rem",
                 }}
               />
             )}
-            <Box className="media-back-drop" sx={{
-              opacity: { xs: 1, md: 0 },
-              transition: "all 0.3s ease",
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              backgroundImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))"
-            }} />
+            <Box
+              className="media-back-drop"
+              sx={{
+                opacity: { xs: 1, md: 0 },
+                transition: "all 0.3s ease",
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                backgroundImage:
+                  "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+              }}
+            />
             <Button
               className="media-play-btn"
               variant="contained"
@@ -71,7 +76,7 @@ const MediaItem = ({ media, mediaType }) => {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                "& .MuiButton-startIcon": { marginRight: "-4px" }
+                "& .MuiButton-startIcon": { marginRight: "-4px" },
               }}
             />
             <Box
@@ -84,12 +89,9 @@ const MediaItem = ({ media, mediaType }) => {
                 width: "100%",
                 height: "max-content",
                 boxSizing: "border-box",
-                padding: { xs: "10px", md: "2rem 1rem" }
-              }}
-            >
+                padding: { xs: "10px", md: "2rem 1rem" },
+              }}>
               <Stack spacing={{ xs: 1, md: 2 }}>
-             
-
                 <Typography>{releaseDate}</Typography>
 
                 <Typography
@@ -97,9 +99,8 @@ const MediaItem = ({ media, mediaType }) => {
                   fontWeight="700"
                   sx={{
                     fontSize: "1rem",
-                    ...uiConfigs.style.typoLines(1, "left")
-                  }}
-                >
+                    ...uiConfigs.style.typoLines(1, "left"),
+                  }}>
                   {title}
                 </Typography>
               </Stack>
@@ -110,14 +111,15 @@ const MediaItem = ({ media, mediaType }) => {
 
         {/* people */}
         {mediaType === "people" && (
-          <Box sx={{
-            position: "absolute",
-            width: "100%",
-            height: "max-content",
-            bottom: 0,
-            padding: "10px",
-            backgroundColor: "rgba(0,0,0,0.6)"
-          }}>
+          <Box
+            sx={{
+              position: "absolute",
+              width: "100%",
+              height: "max-content",
+              bottom: 0,
+              padding: "10px",
+              backgroundColor: "rgba(0,0,0,0.6)",
+            }}>
             <Typography sx={{ ...uiConfigs.style.typoLines(1, "left") }}>
               {media.name}
             </Typography>
