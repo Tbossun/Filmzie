@@ -12,11 +12,15 @@ To run Filmzie locally, follow the instructions below.
 - [Node.js](https://nodejs.org/)
 - [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/)
 
-### Clone the Repository
+### Clone or Download the Repository
+
+You can either clone the repository using Git:
 
 ```bash
 git clone https://github.com/Tbossun/Filmzie.git
 ```
+
+Or download it by clicking on the "Code" button and selecting "Download ZIP." Then, extract the ZIP file.
 
 ### Run the API (Backend)
 
