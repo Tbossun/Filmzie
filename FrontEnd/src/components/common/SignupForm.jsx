@@ -9,6 +9,7 @@ import userApi from "../../api/modules/user.api";
 import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import { setUser } from "../../redux/features/userSlice";
 
+
 const SignupForm = ({ switchAuthState }) => {
   const dispatch = useDispatch();
 

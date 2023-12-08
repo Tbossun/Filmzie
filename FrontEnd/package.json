@@ -2,7 +2,7 @@
   "name": "filmzies",
   "version": "1.0.0",
   "private": true,
-  "description": "A movies listing application designed for accessing , reviewing and adding movies and Tv series to a curated list. This project seemlessly integrates the omdbapi into an asp.net web api providingn a robust back-end. This front-end beautifully renders the movie and TV Series information, offering an engaging and user-friendly experience.",
+  "description": "A movies listing application designed for accessing , reviewing and adding movies and Tv series to a curated list. This project seamlessly integrates the omdbapi into an asp.net web api providing a robust back-end. This front-end beautifully renders the movie and TV Series information, offering an engaging and user-friendly experience.",
    "license": "ISC",
    "author" : "Sodiq Alabi",
   "dependencies": {
